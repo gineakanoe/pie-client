@@ -2,19 +2,33 @@
 //* Silver: Add a table within the return. The head will include: Name of Pie, Base of Pie, Crust, Bake Time, Servings, Rating. The body of the table will be empty.
 //* Gold: import useState from react. Create a state variable of pies that has a default value of an empty array.
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './pies.css';
+import DisplayPies from './Pie/Pie';
 
 const Pies = (props) => {
+    console.log(props);
+    const [pies, setPies] = useState([]);
 
-const [pies, setPies] = useState([]);
 
-    // const [nameOfPie, setNameOfPie] = useState('');
-    // const [baseOfPie, setBaseOfPie] = useState('');
-    // const [crust, setCrust] = useState('');
-    // const [bakeTime, setBakeTime] = useState('');
-    // const [servings, setServings] = useState('');
-    // const [rating, setrating] = useState('');
+    const fetchPies = () => {
+        let url = 'http://localhost:4000/pies';
+
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Authorization': props.sessionToken
+            })
+        })
+        .then(response => response.json())
+        .then(json => setPies(json))
+        .catch(err => console.log(err))
+    }
+    console.log(pies);
+    useEffect(() => {
+        fetchPies();
+    }, [])
 
     return (
         <table>
@@ -29,7 +43,7 @@ const [pies, setPies] = useState([]);
                 </tr>
             </thead>
             <tbody>
-                
+                <DisplayPies pies={pies} />
             </tbody>
 
         </table>
